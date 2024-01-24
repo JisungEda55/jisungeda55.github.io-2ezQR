@@ -1,0 +1,373 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>2ezQR - QR Code Generator</title>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Roboto:wght@900&display=swap');
+
+        #copyright {
+            margin-top: -11px;
+            font-size: 11px; /* 폰트 크기 조정 */
+            color: #888; /* 연한 회색 색상 적용 */
+        }
+
+        body {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            margin-top: 50px;
+            font-family: 'Roboto', sans-serif;
+            background-color: #f2f2f2;
+        }
+        #qrcode {
+            margin-top: 20px;
+            order: 2; /* QR 코드를 마지막으로 이동 */
+        }
+        #buttons {
+            margin-top: 20px;
+            order: 1; /* 버튼을 앞으로 이동 */
+            display: flex;
+            gap: 10px;
+        }
+        #languageToggle {
+            order: 3; /* 언어 토글을 마지막으로 이동 */
+            align-self: flex-end;
+            margin-right: 20px;
+            margin-top: -10px;
+            cursor: pointer;
+        }
+        .language-modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.5);
+            align-items: center;
+            justify-content: center;
+        }
+        .modal-content {
+            background-color: #fff;
+            padding: 20px;
+            border-radius: 10px;
+            text-align: center;
+        }
+        button {
+            padding: 10px;
+            cursor: pointer;
+        }
+
+        /* 모달 스타일 */
+        .modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.5);
+            align-items: center;
+            justify-content: center;
+        }
+
+        .modal-content {
+            background-color: #fff;
+            padding: 20px;
+            border-radius: 10px;
+        }
+    </style>
+</head>
+<body>
+    <a href="https://github.com/JisungEda55/2ezQR" target="_blank" id="githubLink">
+        <img src="https://img.shields.io/badge/GitHub-2ezQR-blue" alt="GitHub">
+    </a>
+    
+    <!-- © 문구 추가 -->
+    <div id="copyright">
+        <p>&copy;2024, 2ezQR Project. Imagined by JisungEda55 with AI</p>
+    </div>
+
+    <h1 id="title">2ezQR - QR Code Generator</h1>
+    <div id="linkContainer">
+        <label for="link" id="linkLabel">Enter a link:</label>
+        <input type="text" id="link" required>
+        <button onclick="generateQRCode()" id="generateBtn">Generate QR Code</button>
+    </div>
+
+    <div id="buttons">
+        <button id="downloadBtn" onclick="downloadQRCode()" disabled>Download QR Code</button>
+        <button id="shareBtn" onclick="shareQRCode()" disabled>Share QR Code</button>
+    </div>
+
+    <div id="languageToggle" onclick="openLanguageModal()">Language</div>
+
+    <!-- 모달 창 -->
+    <div class="modal" id="languageModal">
+        <div class="modal-content">
+            <h2>Select Language</h2>
+            <button onclick="changeLanguage('en')">English</button>
+            <button onclick="changeLanguage('ko')">한국어</button>
+            <button onclick="changeLanguage('es')">Español</button>
+            <button onclick="changeLanguage('zh')">中文</button> <!-- 중국어(간체) -->
+            <button onclick="changeLanguage('hi')">हिन्दी</button> <!-- 힌디어 -->
+            <button onclick="changeLanguage('bn')">বাংলা</button> <!-- 벵골어 -->
+            <button onclick="changeLanguage('pt')">Português</button> <!-- 포르투갈어 -->
+            <button onclick="changeLanguage('ru')">Русский</button> <!-- 러시아어 -->
+            <button onclick="changeLanguage('ja')">日本語</button> <!-- 일본어 -->
+            <button onclick="changeLanguage('fi')">Suomi</button> <!-- 핀란드어 -->
+            <button onclick="changeLanguage('fr')">Français</button> <!-- 프랑스어 -->
+            <button onclick="changeLanguage('de'); setDeutschText();">Deutsch</button> <!-- 독일어 -->
+<button onclick="changeLanguage('ar'); setالعربيةText();">العربية</button> <!-- 아랍어 -->
+<button onclick="changeLanguage('rw'); setIkinyarwandaText();">Ikinyarwanda</button> <!-- 란다어 -->
+<button onclick="changeLanguage('ms'); setBahasaText();">Bahasa Melayu</button> <!-- 말레이어 -->
+<button onclick="changeLanguage('tr'); setTürkçeText();">Türkçe</button> <!-- 터키어 -->
+
+            <button onclick="closeLanguageModal()">Close</button>
+        </div>
+    </div>
+    
+    <div id="qrcode"></div>
+
+    <script src="https://cdn.rawgit.com/davidshimjs/qrcodejs/gh-pages/qrcode.min.js"></script>
+    <script>
+        var currentLanguage = (navigator.language || navigator.userLanguage).substring(0, 2);
+
+        document.addEventListener('DOMContentLoaded', function() {
+            setLanguageText();
+        });
+
+        function setLanguageText() {
+    if (currentLanguage === 'ko') {
+        setKoreanText();
+    } else if (currentLanguage === 'es') {
+        setSpanishText();
+    } else if (currentLanguage === 'zh') {
+        setChineseText();
+    } else if (currentLanguage === 'hi') {
+        setHindiText();
+    } else if (currentLanguage === 'bn') {
+        setBengaliText();
+    } else if (currentLanguage === 'pt') {
+        setPortugueseText();
+    } else if (currentLanguage === 'ru') {
+        setRussianText();
+    } else if (currentLanguage === 'ja') {
+        setJapaneseText();
+    } else if (currentLanguage === 'fi') {
+        setFinnishText();
+    } else if (currentLanguage === 'fr') {
+        setFrenchText();
+    } else if (currentLanguage === 'de') {
+        setDeutschText();
+    } else if (currentLanguage === 'ar') {
+        setالعربيةText();
+    } else if (currentLanguage === 'rw') {
+        setIkinyarwandaText();
+    } else if (currentLanguage === 'ms') {
+        setBahasaText();
+    } else if (currentLanguage === 'tr') {
+        setTürkçeText();
+    } else {
+        setEnglishText();
+    }
+}
+
+        function setKoreanText() {
+            document.getElementById('title').innerText = '2ezQR - QR 코드 생성기';
+            document.getElementById('linkLabel').innerText = '링크를 입력하세요:';
+            document.getElementById('generateBtn').innerText = 'QR 코드 생성';
+            document.getElementById('downloadBtn').innerText = 'QR 코드 다운로드';
+            document.getElementById('shareBtn').innerText = 'QR 코드 공유';
+        }
+
+        function setEnglishText() {
+            document.getElementById('title').innerText = '2ezQR - QR Code Generator';
+            document.getElementById('linkLabel').innerText = 'Enter a link:';
+            document.getElementById('generateBtn').innerText = 'Generate QR Code';
+            document.getElementById('downloadBtn').innerText = 'Download QR Code';
+            document.getElementById('shareBtn').innerText = 'Share QR Code';
+        }
+
+        function setSpanishText() {
+            document.getElementById('title').innerText = '2ezQR - Generador de código QR';
+            document.getElementById('linkLabel').innerText = 'Introduzca un enlace:';
+            document.getElementById('generateBtn').innerText = 'Generar código QR';
+            document.getElementById('downloadBtn').innerText = 'Descargar código QR';
+            document.getElementById('shareBtn').innerText = 'Compartir código QR';
+        }
+
+        function setChineseText() {
+            document.getElementById('title').innerText = '2ezQR - 二维码生成器';
+            document.getElementById('linkLabel').innerText = '输入链接：';
+            document.getElementById('generateBtn').innerText = '生成二维码';
+            document.getElementById('downloadBtn').innerText = '下载二维码分享二维码';
+            document.getElementById('shareBtn').innerText = '分享二维码';
+        }
+
+        function setHindiText() {
+            document.getElementById('title').innerText = '2ezQR - क्यूआर कोड जेनरेटर';
+            document.getElementById('linkLabel').innerText = 'लिंक दर्ज करें:';
+            document.getElementById('generateBtn').innerText = 'क्यूआर कोड बनाएं';
+            document.getElementById('downloadBtn').innerText = 'क्यूआर कोड डाउनलोड करें';
+            document.getElementById('shareBtn').innerText = 'क्यूआर कोड साझा करें';
+        }
+
+        function setBengaliText() {
+            document.getElementById('title').innerText = '2ezQR - কিউআর কোড জেনারেটর';
+            document.getElementById('linkLabel').innerText = 'একটি লিঙ্ক লিখুন:';
+            document.getElementById('generateBtn').innerText = 'কিউআর কোড তৈরি করুন';
+            document.getElementById('downloadBtn').innerText = 'কিউআর কোড ডাউনলোড করুন';
+            document.getElementById('shareBtn').innerText = 'কিউআর কোড ভাগ করুন';
+        }
+
+        function setPortugueseText() {
+            document.getElementById('title').innerText = '2ezQR - Gerador de Código QR';
+            document.getElementById('linkLabel').innerText = 'Insira um link:';
+            document.getElementById('generateBtn').innerText = 'Gerar Código QR';
+            document.getElementById('downloadBtn').innerText = 'Baixar Código QR';
+            document.getElementById('shareBtn').innerText = 'Compartilhar Código QR';
+        }
+
+        function setRussianText() {
+            document.getElementById('title').innerText = '2ezQR - Генератор QR-кода';
+            document.getElementById('linkLabel').innerText = 'Введите ссылку:';
+            document.getElementById('generateBtn').innerText = 'Создать QR-код';
+            document.getElementById('downloadBtn').innerText = 'Скачать QR-код';
+            document.getElementById('shareBtn').innerText = 'Поделиться QR-кодом';
+        }
+
+        function setJapaneseText() {
+            document.getElementById('title').innerText = '2ezQR - QRコードジェネレーター';
+            document.getElementById('linkLabel').innerText = 'リンクを入力してください：';
+            document.getElementById('generateBtn').innerText = 'QRコードを生成する';
+            document.getElementById('downloadBtn').innerText = 'QRコードをダウンロード';
+            document.getElementById('shareBtn').innerText = 'QRコードを共有';
+        }
+
+        function setFinnishText() {
+            document.getElementById('title').innerText = '2ezQR - QR-koodigeneraattori';
+            document.getElementById('linkLabel').innerText = 'Kirjoita linkki:';
+            document.getElementById('generateBtn').innerText = 'Luo QR-koodi';
+            document.getElementById('downloadBtn').innerText = 'Lataa QR-koodi';
+            document.getElementById('shareBtn').innerText = 'Jaa QR-koodi';
+        }
+
+        function setFrenchText() {
+            document.getElementById('title').innerText = '2ezQR - Générateur de code QR';
+            document.getElementById('linkLabel').innerText = 'Entrez un lien:';
+            document.getElementById('generateBtn').innerText = 'Générer un code QR';
+            document.getElementById('downloadBtn').innerText = 'Télécharger le code QR';
+            document.getElementById('shareBtn').innerText = 'Partager le code QR';
+        }
+
+        function setDeutschText() {
+           document.getElementById('title').innerText = '2ezQR - QR-Code-Generator';
+           document.getElementById('linkLabel').innerText = 'Link eingeben:';
+           document.getElementById('generateBtn').innerText = 'QR-Code generieren';
+           document.getElementById('downloadBtn').innerText = 'QR-Code herunterladen';
+           document.getElementById('shareBtn').innerText = 'QR-Code teilen';
+        }
+
+       function setالعربيةText() {
+           document.getElementById('title').innerText = '2ezQR - QR كود مولد';
+           document.getElementById('linkLabel').innerText = 'أدخل الرابط:';
+           document.getElementById('generateBtn').innerText = 'إنشاء رمز الاستجابة الس';
+           document.getElementById('downloadBtn').innerText = 'تحميل رمز الاستجابة الس';
+           document.getElementById('shareBtn').innerText = 'مشاركة رمز الاستجابة السري';
+        }
+
+      function setIkinyarwandaText() {
+           document.getElementById('title').innerText = '2ezQR - QR ကုဒ် ဂျင်နરတာ';
+           document.getElementById('linkLabel').innerText = 'လင့်ခ်ထည့်ပါ:';
+           document.getElementById('generateBtn').innerText = 'QR ကုဒ် ဖန်တီးပါ';
+           document.getElementById('downloadBtn').innerText = 'QR ကုဒ် ဒေါင်းလုဒ်လုပ်ပ';
+           document.getElementById('shareBtn').innerText = 'QR ကုဒ် မျှဝေပါ';
+        }
+
+      function setBahasaText() {
+           document.getElementById('title').innerText = '2ezQR - Penghasil kod QR';
+           document.getElementById('linkLabel').innerText = 'Masukkan pautan:';
+           document.getElementById('generateBtn').innerText = 'Buat kod QR';
+           document.getElementById('downloadBtn').innerText = 'Muat turun kod QR';
+           document.getElementById('shareBtn').innerText = 'Kongsi kod QR';
+        }
+
+      function setTürkçeText() {
+           document.getElementById('title').innerText = '2ezQR - QR Kod Oluşturucu';
+           document.getElementById('linkLabel').innerText = 'Bir bağlantı girin:';
+           document.getElementById('generateBtn').innerText = 'QR Kodu Oluştur';
+           document.getElementById('downloadBtn').innerText = 'QR Kodunu İndir';
+           document.getElementById('shareBtn').innerText = 'QR Kodunu Paylaş';
+        
+      }
+      
+      function toggleLanguage() {
+            currentLanguage = (currentLanguage === 'en') ? 'ko' : 'en';
+            setLanguageText();
+        }
+
+
+        function generateQRCode() {
+            var linkInput = document.getElementById('link');
+            var link = linkInput.value.trim();
+
+            if (link !== '') {
+                var qrcodeDiv = document.getElementById('qrcode');
+                qrcodeDiv.innerHTML = ''; // Clear previous QR code
+
+                try {
+                    // Try to generate QR code
+                    var qrcode = new QRCode(qrcodeDiv, {
+                        text: link,
+                        width: 256,
+                        height: 256,
+                    });
+
+                    // Enable download and share buttons
+                    document.getElementById('downloadBtn').disabled = false;
+                    document.getElementById('shareBtn').disabled = false;
+                } catch (error) {
+                    // If an error occurs during QR code generation, show an error message
+                    alert('OOPS! Please check the link');
+                }
+            } else {
+                alert((currentLanguage === 'ko') ? '링크를 입력하세요.' : 'Please enter a valid link.');
+            }
+        }
+
+        function downloadQRCode() {
+            var qrcodeCanvas = document.querySelector('#qrcode canvas');
+            var link = document.createElement('a');
+            link.href = qrcodeCanvas.toDataURL('image/png');
+            link.download = 'qrcode.png';
+            link.click();
+        }
+
+        function shareQRCode() {
+            var qrcodeCanvas = document.querySelector('#qrcode canvas');
+            var dataUrl = qrcodeCanvas.toDataURL('image/png');
+
+            // Here you can implement the sharing logic, e.g., open a new window or redirect to a sharing service
+            console.log('QR 코드 공유:', dataUrl);
+        }
+
+        // 모달 관련 함수
+        function openLanguageModal() {
+            document.getElementById('languageModal').style.display = 'flex';
+        }
+
+        function closeLanguageModal() {
+            document.getElementById('languageModal').style.display = 'none';
+        }
+
+        function changeLanguage(languageCode) {
+            currentLanguage = languageCode;
+            setLanguageText();
+            closeLanguageModal();
+        }
+    </script>
+</body>
+</html>
