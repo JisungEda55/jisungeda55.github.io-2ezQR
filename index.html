@@ -1,16 +1,16 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>2ezQR - QR Code Generator</title>
+    <link rel="stylesheet" href="https://webfontworld.github.io/TheJamsil/TheJamsil.css">
     <style>
-        @import url('https://fonts.googleapis.com/css2?family=Roboto:wght@900&display=swap');
-
         #copyright {
             margin-top: -11px;
-            font-size: 11px; /* 폰트 크기 조정 */
-            color: #888; /* 연한 회색 색상 적용 */
+            font-size: 11px;
+            color: #FFF;
         }
 
         body {
@@ -18,26 +18,44 @@
             flex-direction: column;
             align-items: center;
             margin-top: 50px;
-            font-family: 'Roboto', sans-serif;
-            background-color: #f2f2f2;
+            font-family: 'TheJamsil', sans-serif;
+            background-color: #007aff;
+            color: #f5f5f7;
+            transition: background-color 0.5s ease;
+            font-weight: 500;
         }
+
         #qrcode {
-            margin-top: 20px;
-            order: 2; /* QR 코드를 마지막으로 이동 */
+            margin-top: 17px;
+            order: 2;
         }
+
         #buttons {
-            margin-top: 20px;
-            order: 1; /* 버튼을 앞으로 이동 */
+            margin-top: 8px;
+            order: 1;
             display: flex;
-            gap: 10px;
+            gap: 2px;
         }
+
         #languageToggle {
-            order: 3; /* 언어 토글을 마지막으로 이동 */
+            order: 3;
             align-self: flex-end;
             margin-right: 20px;
             margin-top: -10px;
             cursor: pointer;
         }
+
+        #darkModeToggle {
+            order: 4;
+            background-color: #000000;
+            color: #f5f5f7;
+            padding: 10px;
+            border: none;
+            border-radius: 50%;
+            margin-top: 10px;
+            cursor: pointer;
+        }
+
         .language-modal {
             display: none;
             position: fixed;
@@ -49,18 +67,27 @@
             align-items: center;
             justify-content: center;
         }
+
         .modal-content {
             background-color: #fff;
             padding: 20px;
             border-radius: 10px;
             text-align: center;
         }
+
         button {
             padding: 10px;
             cursor: pointer;
+            border-radius: 15px; /* 더 둥글게 수정 */
+            transition: background-color 0.3s ease;
+            font-weight: 500; /* 폰트 두께 수정 */
+            font-family: 'TheJamsil', sans-serif; /* 폰트 적용 */
         }
 
-        /* 모달 스타일 */
+        button:hover {
+            background-color: rgba(255, 255, 255, 0.1);
+        }
+
         .modal {
             display: none;
             position: fixed;
@@ -80,12 +107,12 @@
         }
     </style>
 </head>
+
 <body>
     <a href="https://github.com/JisungEda55/2ezQR" target="_blank" id="githubLink">
         <img src="https://img.shields.io/badge/GitHub-2ezQR-blue" alt="GitHub">
     </a>
-    
-    <!-- © 문구 추가 -->
+
     <div id="copyright">
         <p>&copy;2024, 2ezQR Project. Imagined by JisungEda55 with AI</p>
     </div>
@@ -102,80 +129,81 @@
         <button id="shareBtn" onclick="shareQRCode()" disabled>Share QR Code</button>
     </div>
 
-    <div id="languageToggle" onclick="openLanguageModal()">Language</div>
+    <button id="languageToggle" onclick="openLanguageModal()">Language</button>
 
-    <!-- 모달 창 -->
+    <button id="darkModeToggle" onclick="toggleDarkMode()">Theme</button>
+
     <div class="modal" id="languageModal">
-        <div class="modal-content">
-            <h2>Select Language</h2>
-            <button onclick="changeLanguage('en')">English</button>
-            <button onclick="changeLanguage('ko')">한국어</button>
-            <button onclick="changeLanguage('es')">Español</button>
-            <button onclick="changeLanguage('zh')">中文</button> <!-- 중국어(간체) -->
-            <button onclick="changeLanguage('hi')">हिन्दी</button> <!-- 힌디어 -->
-            <button onclick="changeLanguage('bn')">বাংলা</button> <!-- 벵골어 -->
-            <button onclick="changeLanguage('pt')">Português</button> <!-- 포르투갈어 -->
-            <button onclick="changeLanguage('ru')">Русский</button> <!-- 러시아어 -->
-            <button onclick="changeLanguage('ja')">日本語</button> <!-- 일본어 -->
-            <button onclick="changeLanguage('fi')">Suomi</button> <!-- 핀란드어 -->
-            <button onclick="changeLanguage('fr')">Français</button> <!-- 프랑스어 -->
-            <button onclick="changeLanguage('de'); setDeutschText();">Deutsch</button> <!-- 독일어 -->
-<button onclick="changeLanguage('ar'); setالعربيةText();">العربية</button> <!-- 아랍어 -->
-<button onclick="changeLanguage('rw'); setIkinyarwandaText();">Ikinyarwanda</button> <!-- 란다어 -->
-<button onclick="changeLanguage('ms'); setBahasaText();">Bahasa Melayu</button> <!-- 말레이어 -->
-<button onclick="changeLanguage('tr'); setTürkçeText();">Türkçe</button> <!-- 터키어 -->
-
-            <button onclick="closeLanguageModal()">Close</button>
-        </div>
+    <div class="modal-content">
+        <h2 style="color: rgb(32, 32, 32);">Select Language</h2>
+        <button onclick="changeLanguage('en')">English</button>
+        <button onclick="changeLanguage('ko')">한국어</button>
+        <button onclick="changeLanguage('es')">Español</button>
+        <button onclick="changeLanguage('zh')">中文</button>
+        <button onclick="changeLanguage('hi')">हिन्दी</button>
+        <button onclick="changeLanguage('bn')">বাংলা</button>
+        <button onclick="changeLanguage('pt')">Português</button>
+        <button onclick="changeLanguage('ru')">Русский</button>
+        <button onclick="changeLanguage('ja')">日本語</button>
+        <button onclick="changeLanguage('fi')">Suomi</button>
+        <button onclick="changeLanguage('fr')">Français</button>
+        <button onclick="changeLanguage('de'); setDeutschText();">Deutsch</button>
+        <button onclick="changeLanguage('ar'); setالعربيةText();">العربية</button>
+        <button onclick="changeLanguage('rw'); setIkinyarwandaText();">Ikinyarwanda</button>
+        <button onclick="changeLanguage('ms'); setBahasaText();">Bahasa Melayu</button>
+        <button onclick="changeLanguage('tr'); setTürkçeText();">Türkçe</button>
+        <button onclick="closeLanguageModal()">Close</button>
     </div>
-    
+</div>
+
     <div id="qrcode"></div>
 
     <script src="https://cdn.rawgit.com/davidshimjs/qrcodejs/gh-pages/qrcode.min.js"></script>
     <script>
         var currentLanguage = (navigator.language || navigator.userLanguage).substring(0, 2);
+        var darkModeEnabled = false;
 
-        document.addEventListener('DOMContentLoaded', function() {
+        document.addEventListener('DOMContentLoaded', function () {
             setLanguageText();
         });
 
         function setLanguageText() {
-    if (currentLanguage === 'ko') {
-        setKoreanText();
-    } else if (currentLanguage === 'es') {
-        setSpanishText();
-    } else if (currentLanguage === 'zh') {
-        setChineseText();
-    } else if (currentLanguage === 'hi') {
-        setHindiText();
-    } else if (currentLanguage === 'bn') {
-        setBengaliText();
-    } else if (currentLanguage === 'pt') {
-        setPortugueseText();
-    } else if (currentLanguage === 'ru') {
-        setRussianText();
-    } else if (currentLanguage === 'ja') {
-        setJapaneseText();
-    } else if (currentLanguage === 'fi') {
-        setFinnishText();
-    } else if (currentLanguage === 'fr') {
-        setFrenchText();
-    } else if (currentLanguage === 'de') {
-        setDeutschText();
-    } else if (currentLanguage === 'ar') {
-        setالعربيةText();
-    } else if (currentLanguage === 'rw') {
-        setIkinyarwandaText();
-    } else if (currentLanguage === 'ms') {
-        setBahasaText();
-    } else if (currentLanguage === 'tr') {
-        setTürkçeText();
-    } else {
-        setEnglishText();
-    }
-}
+            if (currentLanguage === 'ko') {
+                setKoreanText();
+            } else if (currentLanguage === 'es') {
+                setSpanishText();
+            } else if (currentLanguage === 'zh') {
+                setChineseText();
+            } else if (currentLanguage === 'hi') {
+                setHindiText();
+            } else if (currentLanguage === 'bn') {
+                setBengaliText();
+            } else if (currentLanguage === 'pt') {
+                setPortugueseText();
+            } else if (currentLanguage === 'ru') {
+                setRussianText();
+            } else if (currentLanguage === 'ja') {
+                setJapaneseText();
+            } else if (currentLanguage === 'fi') {
+                setFinnishText();
+            } else if (currentLanguage === 'fr') {
+                setFrenchText();
+            } else if (currentLanguage === 'de') {
+                setDeutschText();
+            } else if (currentLanguage === 'ar') {
+                setالعربيةText();
+            } else if (currentLanguage === 'rw') {
+                setIkinyarwandaText();
+            } else if (currentLanguage === 'ms') {
+                setBahasaText();
+            } else if (currentLanguage === 'tr') {
+                setTürkçeText();
+            } else {
+                setEnglishText();
+            }
+        }
 
-        function setKoreanText() {
+       function setKoreanText() {
             document.getElementById('title').innerText = '2ezQR - QR 코드 생성기';
             document.getElementById('linkLabel').innerText = '링크를 입력하세요:';
             document.getElementById('generateBtn').innerText = 'QR 코드 생성';
@@ -309,28 +337,24 @@
             setLanguageText();
         }
 
-
         function generateQRCode() {
             var linkInput = document.getElementById('link');
             var link = linkInput.value.trim();
 
             if (link !== '') {
                 var qrcodeDiv = document.getElementById('qrcode');
-                qrcodeDiv.innerHTML = ''; // Clear previous QR code
+                qrcodeDiv.innerHTML = '';
 
                 try {
-                    // Try to generate QR code
                     var qrcode = new QRCode(qrcodeDiv, {
                         text: link,
                         width: 256,
                         height: 256,
                     });
 
-                    // Enable download and share buttons
                     document.getElementById('downloadBtn').disabled = false;
                     document.getElementById('shareBtn').disabled = false;
                 } catch (error) {
-                    // If an error occurs during QR code generation, show an error message
                     alert('OOPS! Please check the link');
                 }
             } else {
@@ -350,11 +374,24 @@
             var qrcodeCanvas = document.querySelector('#qrcode canvas');
             var dataUrl = qrcodeCanvas.toDataURL('image/png');
 
-            // Here you can implement the sharing logic, e.g., open a new window or redirect to a sharing service
-            console.log('QR 코드 공유:', dataUrl);
+            fetch(dataUrl)
+                .then(response => response.blob())
+                .then(blob => {
+                    if (navigator.canShare && navigator.canShare({ files: [blob] })) {
+                        navigator.share({
+                            files: [new File([blob], 'qrcode.png', { type: 'image/png' })],
+                            title: '2ezQR QR Code',
+                            text: 'Check out this QR Code!',
+                        })
+                            .then(() => console.log('Shared successfully'))
+                            .catch((error) => console.error('Error sharing:', error));
+                    } else {
+                        console.warn('Sharing not supported. Performing alternative action.');
+                    }
+                })
+                .catch(error => console.error('Error creating Blob:', error));
         }
 
-        // 모달 관련 함수
         function openLanguageModal() {
             document.getElementById('languageModal').style.display = 'flex';
         }
@@ -368,6 +405,23 @@
             setLanguageText();
             closeLanguageModal();
         }
+
+        function toggleDarkMode() {
+            darkModeEnabled = !darkModeEnabled;
+
+            if (darkModeEnabled) {
+                document.body.style.backgroundColor = '#1d1d1f';
+                document.body.style.color = '#f5f5f7';
+            } else {
+                document.body.style.backgroundColor = '#007aff';
+                document.body.style.color = '#f5f5f7';
+            }
+
+            var darkModeToggleBtn = document.getElementById('darkModeToggle');
+            darkModeToggleBtn.style.backgroundColor = darkModeEnabled ? '#007aff' : '#1d1d1f';
+            darkModeToggleBtn.style.color = darkModeEnabled ? '#f5f5f7' : '#f5f5f7';
+        }
     </script>
 </body>
+
 </html>
